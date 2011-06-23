@@ -1,0 +1,23 @@
+
+		ul#navigation {
+width:800px;
+margin:0;
+overflow:hidden;　/*float解除*/
+		 zoom:100%;　/*float解除*/
+		}
+	ul#navigation li {
+float:left; /*次の要素を右側へ回り込ませる*/
+      list-style:none; /*リストの●を消す*/
+	}
+	ul#navigation li a {
+display:block; /*インラインからブロック要素へ変更*/
+height:30px; /*高さ*/
+width:200px; /*横幅*/
+      text-align:center; /*テキストの位置*/
+      font-weight:bold; /*テキストの太さ*/
+      letter-spacing:1px; /*文字間隔*/
+      text-indent:-9898px; /*テキストを横に飛ばして見えなくする*/
+      background-image:url(../images/menu.png); /*メニュー画像*/
+      background-repeat:no-repeat; /*画像の繰り返しをオフに*/
+	} 
+	ul#navigation a#menu0 {background-position:0px 0px;}ul#navigation li a#menu0:hover {background-position:0px -30px;}ul#navigation a#menu1 {background-position:-200px 0px;}ul#navigation li a#menu1:hover {background-position:-200px -30px;}ul#navigation a#menu2 {background-position:-400px 0px;}ul#navigation li a#menu2:hover {background-position:-400px -30px;}ul#navigation a#menu3 {background-position:-600px 0px;}ul#navigation li a#menu3:hover {background-position:-600px -30px;}

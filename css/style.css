@@ -1,0 +1,264 @@
+body {
+font-size:11px;
+}
+h1 {
+margin:0;
+}
+h2 {
+margin:0;
+background-color:#9999FF;
+}
+h3 {
+margin:0;
+background-color:#9999FF;
+}
+img {
+border-style:none;
+margin:0;
+}
+
+form {
+display:inline;
+}
+
+#edit input,#comment input {
+display:block;
+clear: left;
+}
+#edit textarea,#comment textarea {
+display:block;
+clear: left;
+}
+#edit label,#comment input {
+display:block;
+clear: left;
+}
+
+#edit br,#comment br { clear: left; }
+
+#setup input,#login inpu {
+display: block;
+float: left;
+}
+#setup label,#login label {
+display: block;
+width: 150px;
+float: left;
+text-align: right;
+padding-right: 15px;
+}
+#setup br,#login br { clear: left; }
+
+
+#wrapper {
+ width:800px;
+ margin-right:auto;
+ margin-left:auto;
+}
+
+#header {
+        clear: both;
+        width: 800px;
+}
+#title {
+    width:600;
+    float:left;
+}
+#setup {
+        width: 400px;
+	text-align:left;
+	margin-left:auto;
+	margin-right:auto;
+}
+#login {
+        width: 400px;
+	border-style:solid;
+	border-width:1px;
+	margin-bottom:10px;
+	text-align:left;
+	margin-left:auto;
+	margin-right:auto;
+}
+#page {
+        width: 600px;
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+}
+#entry {
+        width: 600px;
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+}
+#account {
+        width: 600px;
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+}
+#colmuns {
+	background-color:#9999FF;
+}
+#contents {
+        clear: both;
+        width: 800px;
+	margin-right:auto;
+	margin-left:auto;
+}
+
+#menu {
+   float: left;
+   width: 190px;     /* floatに、width 指定は必須です。*/
+   text-align:left;
+   margin-right:10px; /*右の間隔をあける*/
+}
+#main {
+   float: left;
+   width: 590px;
+   text-align:left;
+   margin-right:10px; /*右の間隔をあける*/
+}
+#sidebar {
+   float: left;
+   text-align:left;
+   width: 190px;
+}
+.box {
+	width:100%;
+	border-style:solid;
+	border-width:1px;
+	margin-bottom:10px; /*上下の間隔をあける*/
+}
+
+/*
+#contents {
+        width: 600px;
+        float: left;
+	border-style:solid;
+	border-width:1px;
+	margin-bottom:10px;
+	text-align:left;
+}
+#contents img {
+	border-style:none;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+*/
+#photoframe {
+        width: 600px;
+        float: left;
+}
+#photoframe img {
+	border-style:solid;
+	border-width:1px;
+	border-color:black;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+/*
+#menu {
+        clear: both;
+        float: right;
+        width: 180px;
+	border-style:solid;
+	border-width:1px;
+	margin-bottom:10px;
+	text-align:left;
+}
+*/
+#pr {
+        float: right;
+        width: 180px;
+	border-style:solid;
+	border-width:1px;
+}
+#pagenation {
+        clear: both;
+	width:590px;
+	text-align:center;
+}
+#footer {
+        clear: both;
+	width:800px;
+	text-align:center;
+}
+
+#logo {
+        float: left;
+}
+#gnavi {
+    float:right;
+    text-align:right;
+}
+.commentlink {
+    text-align:right;
+}
+
+#photolist{
+	width: 550px;
+	margin-top:20px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+#photo {
+	float:left;
+	list-style-type:none;
+	width: 110px;
+	height: 110px;
+}
+
+#photo img {
+	border-style:none;
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}
+
+
+.tree ul
+	{
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	}
+
+.tree ul ul
+	{
+	padding-left: 25px;
+	background-image: url(../images/28.png);
+	background-repeat: repeat-y;
+	}
+
+.tree ul ul li
+	{
+	margin-left: -25px;
+	padding-left: 25px;
+	background-image: url(../images/268.png);
+	background-repeat: no-repeat;
+	}
+
+.tree ul ul li.lastitem
+	{
+	background-color: white;
+	background-image: url(../images/68.png);
+	background-repeat: no-repeat;
+	margin-bottom: 0.5em;
+	}
+
+#navigation ul{
+        clear: both;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#navigation ul li{
+  float: left;
+  margin: 0px 5px 5px 0px;
+  padding: 0px;
+}
