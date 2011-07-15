@@ -24,7 +24,7 @@ class MenuModel extends CMSModel
 	}
 
 	public function initmenu() {
-		$sql = "SELECT count(*) FROM menu";
+		$sql = sprintf("SELECT count(*) FROM %s",TABLE_PREFIX."menu");
 		$result = mysql_query($sql,$this->db);
 		$count = mysql_result($result,0);
 		if(!$count){
@@ -168,41 +168,5 @@ width:".$width."px; /*横幅*/
 		return $tree;
 	}
 
-	public function tree_view($data=array(),$root = true){
-
-		$html .= "<ul>\n";
-		if(is_array($data)){
-			foreach($data as $key => $value){
-				if (isset($data[$key+1]) or $root) {
-					$html .= "<li>\n";
-				} else {
-					$html .= "<li class=\"lastitem\">\n";
-				}
-				$name = $value['name'];
-				$id = $value['id'];
-				if ($root) {
-					$checked = " checked=\"checked\" ";
-				} else {
-					$checked = "";
-				}
-				//$html .= "<input type=\"radio\" name=\"id\" value=\"$id\" $checked>";
-				//$html .= "<a href=\"edit.php?id=$id\"> $name</a>";
-				//$html .= $name."[<a href=\"index.php?c=menu&a=new&parent_id=$id\">Add</a>] [<a href=\"index.php?c=menu&a=edit&id=$id\">Edit</a>] [<a href=\"index.php?c=menu&a=delete&id=$id\">Delete</a>]";
-				$html .= $name."[<a href=\"menu/edit/?parent_id=$id\">Add</a>] [<a href=\"menu/$id/edit/\">Edit</a>]";
-				$html .= "<form class=\"delete\" action=\"menu/$id/\" method=\"post\">
-<input type=\"hidden\" name=\"_method\" value=\"delete\">
-<input type=\"submit\" value=\"delete\" onclick=\"return confirm('delete this menu?');\">
-</form>";
-				//print_r($value);
-				if(is_array($value['child'])) {
-					$html .= $this->tree_view($value['child'],false);
-					//$aaa[] = $value;
-				}
-				$html .= "</li>\n";
-			}
-		}
-		$html .= "</ul>\n";
-		return $html;
-	}
 }
 ?>

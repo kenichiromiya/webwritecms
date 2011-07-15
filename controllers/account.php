@@ -35,17 +35,17 @@ class AccountController extends CMSController
         }
 
 	public function get(){
-		if ($this->param['a'] == "edit") {
+		if ($this->param['action'] == "edit") {
                         if ($this->param['id']) {
 				$account = $this->accountmodel->getaccount($this->param);
                                 $this->var['_method'] = "post";
-                        } elseif($this->param['a'] == "edit") {
+                        } elseif($this->param['action'] == "edit") {
                                 $account = array('username'=>'','role'=>'');
                                 $this->var['_method'] = "put";
                         }
 			$this->var['account'] = $account;
 			$this->var['main'] = $this->template->getcontents("account/edit.php",$this->var);
-		} elseif ($this->param['a'] == "admin") {
+		} elseif ($this->param['action'] == "admin") {
 			$this->var['accounts'] = $this->accountmodel->getaccounts();
 			$this->var['main'] = $this->template->getcontents("account/account.php",$this->var);
 		}

@@ -2,6 +2,7 @@
 $_LANG['edit'] = 'Edit';
 $_LANG['new'] = 'New';
 $_LANG['title'] = 'Title';
+$_LANG['category'] = 'Category';
 $_LANG['footer'] = 'Footer';
 $_LANG['logo'] = 'Logo';
 $_LANG['path'] = 'Path';
@@ -26,11 +27,13 @@ $_LANG['menu_url'] = 'Url';
 $_LANG['menu_path'] = 'Path';
 $_LANG['menu_add'] = 'Add menu';
 $_LANG['menu_delete'] = 'Delete menu';
+$_LANG['menu_submit'] = 'Submit';
+$_LANG['category_name'] = 'Name';
 $_LANG['category_add'] = 'Add Category';
 $_LANG['category_delete'] = 'Delete Category';
 $_LANG['category_id'] = 'Category Id';
-$_LANG['category_name'] = 'Name';
 $_LANG['category_parent'] = 'Parent Category';
+$_LANG['category_submit'] = 'Submit';
 $_LANG['entry_comment'] = 'Comment';
 $_LANG['entry_post_comment'] = 'Post comment';
 $_LANG['entry_name'] = 'Name';
@@ -53,6 +56,8 @@ $_LANG['config_main_img'] = 'Main Image';
 $_LANG['config_copyright'] = 'Copyright';
 $_LANG['config_adddate'] = 'Add Date';
 $_LANG['config_moddate'] = 'Mod Date';
+$_LANG['image'] = 'Image';
+$_LANG['image_edit'] = 'Edit Image';
 
 
 

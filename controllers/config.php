@@ -30,10 +30,10 @@ class ConfigController extends CMSController
 	}
 
 	public function get() {
-                if ($this->param['a'] == "edit") {
+                if ($this->param['action'] == "edit") {
 			$this->var['_method'] = "post";
                         $this->var['main'] = $this->template->getcontents("config/edit.php",$this->var);
-                } elseif ($this->param['a'] == "admin") {
+                } elseif ($this->param['action'] == "admin") {
                         $this->var['main'] = $this->template->getcontents("config/config.php",$this->var);
 
                 }

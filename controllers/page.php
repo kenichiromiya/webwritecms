@@ -14,7 +14,7 @@ class PageController extends CMSController
 		$this->pagemodel = new PageModel();
 		$this->menumodel = new MenuModel();
 
-                if (!($this->param['method'] == "GET" and $this->param['a'] == "")) {
+                if (!($this->param['method'] == "GET" and $this->param['action'] == "")) {
 			$this->auth();
                 }
 		//print_r($session);
@@ -37,7 +37,7 @@ class PageController extends CMSController
 
 	public function get() {
 		$this->var['recentpages'] = $this->pagemodel->getrecentpages();
-		if ($this->param['a'] == "edit") {
+		if ($this->param['action'] == "edit") {
 			if ($this->param['id']) {
 				$page = $this->pagemodel->getpage($this->param);
 				$this->var['_method'] = "post";
@@ -48,7 +48,7 @@ class PageController extends CMSController
 			$this->var['page'] = $page;
 			$this->var['main'] = $this->template->getcontents("page/edit.php",$this->var);
 			$this->template->display("admin/index.php",$this->var);
-		}elseif ($this->param['a'] == "admin") {
+		}elseif ($this->param['action'] == "admin") {
 			$this->param['n'] = isset($this->param['n']) ? $this->param['n'] : '10';
 			$this->param['p'] = isset($this->param['p']) ? $this->param['p'] : '1';
 			$pages = $this->pagemodel->getpages($this->param);

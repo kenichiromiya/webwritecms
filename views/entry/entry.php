@@ -8,10 +8,15 @@ if ($session['username']){
 ?>
 
 <h2 class="title"><?=$entry['title']?></h2>
-<?=$entry['adddate']?>
+<div class="adddate"><?=$entry['adddate']?></div>
+<div class="categorypath">
+<?php
+echo implode("/",$categorypath);
+?>
+</div>
 <?=$entry['body']?>
 
-<?php $commentnum = isset($entry['commentnum']) ? $entry['commentnum'] : '0';?>
+<?php $commentnum = isset($commentnum) ? $commentnum : '0';?>
 <div class="commentlink"><a href="entry/<?php echo $entry['id']?>/#comments"><?=$_LANG['entry_comment']?>(<?=$commentnum?>)</a></div>
 <?=$comment?>
 </div>

@@ -33,7 +33,7 @@ class MenuController extends CMSController
 	public function get() {
 		global $_LANG;
 
-		if ($this->param['a'] == "edit") {
+		if ($this->param['action'] == "edit") {
 			if ($this->param['id']) {
 				$menu = $this->menumodel->getmenu($this->param);
 				$this->var['_method'] = "post";
@@ -45,15 +45,16 @@ class MenuController extends CMSController
 			$this->var['menu'] = $menu;
 			$this->var['main'] = $this->template->getcontents("menu/edit.php",$this->var);
 
-		} elseif ($this->param['a'] == "admin") {
+		} elseif ($this->param['action'] == "admin") {
 
 			$this->menumodel->initmenu();
-			$menutree = $this->menumodel->getmenutree();
-			//print_r($a);
-			$tree = "<div class=\"tree\">";
-			$tree .= $this->menumodel->tree_view($menutree);
-			$tree .= "</div>";
+			$tree = $this->menumodel->getmenutree();
 			$this->var['tree'] = $tree;
+			//print_r($a);
+			//$tree = "<div class=\"tree\">";
+			//$tree .= $this->menumodel->tree_view($menutree);
+			//$tree .= "</div>";
+			//$this->var['tree'] = $tree;
 
 			$this->var['main'] = $this->template->getcontents("menu/admin.php",$this->var);
 

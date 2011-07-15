@@ -1,6 +1,7 @@
 <?php
 include_once("controllers/cms.php");
 include_once("models/menu.php");
+include_once("models/category.php");
 include_once("models/entry.php");
 include_once("models/comment.php");
 
@@ -13,11 +14,12 @@ class EntryController extends CMSController
 	public function __construct() {
 		parent::__construct();
 		$this->param['body'] = stripslashes(strip_tags($_POST['body'],"<h1><h2><h3><h4><h5><h6><p><a><b><br><img>"));
+                $this->menumodel = new MenuModel();
+                $this->categorymodel = new CategoryModel();
 		$this->entrymodel = new EntryModel();
 		$this->commentmodel = new CommentModel();
-                $this->menumodel = new MenuModel();
 
-		if (!($this->param['method'] == "GET" and $this->param['a'] == "")) {
+		if (!($this->param['method'] == "GET" and $this->param['action'] == "")) {
 			$this->auth();
 		}
 	}
@@ -38,9 +40,9 @@ class EntryController extends CMSController
 	}
 
 	public function get() {
-		$this->var['recententries'] = $this->entrymodel->getrecententries();
+		$this->var['recententries'] = $this->entrymodel->getrecententries($this->param);
 
-		if ($this->param['a'] == "edit") {
+		if ($this->param['action'] == "edit") {
 			if ($this->param['id']) {
 				$entry = $this->entrymodel->getentry($this->param);
 				$this->var['_method'] = "post";
@@ -48,27 +50,30 @@ class EntryController extends CMSController
 				$entry = array('id'=>'','title'=>'','body'=>'','categoy_id'=>'');
 				$this->var['_method'] = "put";
 			}
+			$this->var['categorytree'] = $this->categorymodel->getcategorytree();
 
 			$this->var['entry'] = $entry;
 			$this->var['main'] = $this->template->getcontents("entry/edit.php",$this->var);
 			$this->template->display("admin/index.php",$this->var);
-		} elseif ($this->param['a'] == "admin") {
+		} elseif ($this->param['action'] == "admin") {
 			$this->param['n'] = 10;
 			$entries = $this->entrymodel->getentries($this->param);
+			$count = $this->entrymodel->getcount($this->param);
 			$this->var['entries'] = $entries;
 			$this->var['main'] = $this->template->getcontents("entry/admin.php",$this->var);
 
 			$page = isset($this->param['p']) ? $this->param['p'] : '1';
-			$count = $this->entrymodel->getcount($this->param);
 			$this->var['pagenation'] = getpagenation(array('cur_page'=>$page,'per_page'=>$this->param['n'],'total_rows'=>$count));
 			$this->var['main'] .= $this->template->getcontents("entry/pagenation.php",$this->var);
 			$this->template->display("admin/index.php",$this->var);
 		} elseif ($this->param['id']) {
-			$menutree = $this->menumodel->getmenutree();
-			$this->var['menutree'] = $menutree;
+			$this->var['menutree'] = $this->menumodel->getmenutree();
+			$this->var['categorytree'] = $this->categorymodel->getcategorytree();
 			$this->var['header'] = $this->template->getcontents("menu/menu.php",$this->var);
 			$entry = $this->entrymodel->getentry($this->param);
 			$this->var['entry'] = $entry;
+			$this->var['categorypath'] = $this->categorymodel->getcategorypath($entry['category_id']);
+			$this->var['commentnum'] = $this->commentmodel->getcommentnum($entry['id']);
 			$date = $entry['adddate'];
 			$year = substr($date,0,4);
 			$mon = substr($date,5,2);
@@ -84,17 +89,19 @@ class EntryController extends CMSController
 
 		} else {
 			$this->param['n'] = 3;
-			$menutree = $this->menumodel->getmenutree();
-			$this->var['menutree'] = $menutree;
+			$this->var['menutree'] = $this->menumodel->getmenutree();
+			$this->var['categorytree'] = $this->categorymodel->getcategorytree();
 			$this->var['header'] = $this->template->getcontents("menu/menu.php",$this->var);
 			$entries = $this->entrymodel->getentries($this->param);
+			$count = $this->entrymodel->getcount($this->param);
 			foreach ($entries as $entry){
 				$this->var['entry'] = $entry;
+				$this->var['categorypath'] = $this->categorymodel->getcategorypath($entry['category_id']);
+				$this->var['commentnum'] = $this->commentmodel->getcommentnum($entry['id']);
 				$this->var['main'] .= $this->template->getcontents("entry/entry.php",$this->var);
 			}
 			//$this->var['htmlentries'] = $htmlentries;
 			$page = isset($this->param['p']) ? $this->param['p'] : '1';
-			$count = $this->entrymodel->getcount($this->param);
 			$this->var['pagenation'] = getpagenation(array('cur_page'=>$page,'per_page'=>'3','total_rows'=>$count));
 			$this->var['main'] .= $this->template->getcontents("entry/pagenation.php",$this->var);
 			//$this->var['entries'] = $entries;

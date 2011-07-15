@@ -18,12 +18,12 @@ class EntryModel extends CMSModel {
 	}
 
 	public function addentry($param) {
-		$query = sprintf("INSERT INTO %s (title,body,adddate,moddate) VALUES('%s','%s',now(),now())",TABLE_PREFIX."entry",m($param['title']),m($param['body']));
+		$query = sprintf("INSERT INTO %s (title,category_id,body,adddate,moddate) VALUES('%s','%s','%s',now(),now())",TABLE_PREFIX."entry",m($param['title']),m($param['category_id']),m($param['body']));
 		mysql_query($query,$this->db);
 	}
 
 	public function editentry($param){
-		$query = sprintf("UPDATE %s SET title = '%s',body = '%s',moddate = now() WHERE id = '%s'",TABLE_PREFIX."entry",m($param['title']),m($param['body']),m($param['id']));
+		$query = sprintf("UPDATE %s SET title = '%s',category_id = '%s',body = '%s',moddate = now() WHERE id = '%s'",TABLE_PREFIX."entry",m($param['title']),m($param['category_id']),m($param['body']),m($param['id']));
 		mysql_query($query,$this->db);
 	}
 
@@ -33,8 +33,7 @@ class EntryModel extends CMSModel {
 	}
 
 	public function getentry($param) {
-		$subquery = sprintf("SELECT count(*) AS commentnum,entry_id FROM %s GROUP BY entry_id",TABLE_PREFIX."comment");
-		$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s AS E LEFT JOIN ($subquery) AS C ON E.id = C.entry_id WHERE E.id = '%s'",TABLE_PREFIX."entry",m($param['id']));
+		$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s WHERE id = '%s'",TABLE_PREFIX."entry",m($param['id']));
 		$result = mysql_query($query,$this->db);
 		$entry=mysql_fetch_assoc($result);
 		return $entry;
@@ -53,8 +52,12 @@ class EntryModel extends CMSModel {
 		return $entry;
 	}
 
-	public function getrecententries(){
-		$sql = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s ORDER BY adddate DESC limit %s,%s",TABLE_PREFIX."entry",m("0"),m("10"));
+	public function getrecententries($param){
+		$category_id = $param['c'];
+		if ($category_id) {
+			$wherequery = sprintf("WHERE category_id = '%s'",m($category_id));
+		}
+		$sql = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s $wherequery ORDER BY adddate DESC limit %s,%s",TABLE_PREFIX."entry",m("0"),m("10"));
 		$result = mysql_query($sql,$this->db);
 		$entries = array();
 		while ($row=mysql_fetch_assoc($result)){
@@ -65,10 +68,11 @@ class EntryModel extends CMSModel {
 
 	public function getentries($param) {
 		$date = $param['d'];
+		$category_id = $param['c'];
 		$num_per_page = isset($param['n']) ? $param['n'] : '1';
 		$page = isset($param['p']) ? $param['p'] : '1';
 		$start = ($page-1)*$num_per_page;
-		$subquery = sprintf("SELECT count(*) AS commentnum,entry_id FROM %s GROUP BY entry_id",TABLE_PREFIX."comment");
+		$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s ",TABLE_PREFIX."entry");
 		if ($date){
 			if (strlen($date) == 6){
 				list($year,$mon) = sscanf($date,"%04d%02d");
@@ -79,10 +83,12 @@ class EntryModel extends CMSModel {
 				$adddate = sprintf("%04d-%02d-%02d%%",$year,$mon,$mday);
 			}
 			//$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s AS E LEFT JOIN ($subquery) AS C ON E.id = C.entry_id WHERE adddate like '%s' ORDER BY adddate DESC limit %s,%s",TABLE_PREFIX."entry",m($adddate),m($start),m($num_per_page));
-			$wherequery = sprintf("WHERE adddate like '%s'",m($adddate));
+			$query .= sprintf("WHERE adddate like '%s' ",m($adddate));
 		}
-		$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s AS E LEFT JOIN ($subquery) AS C ON E.id = C.entry_id $wherequery ORDER BY adddate DESC limit %s,%s",TABLE_PREFIX."entry",m($start),m($num_per_page));
-		//echo $query;
+		if ($category_id) {
+			$query .= sprintf("WHERE category_id = '%s' ",m($category_id));
+		}
+		$query .= sprintf("ORDER BY adddate DESC limit %s,%s ",m($start),m($num_per_page));
 		$result = mysql_query($query,$this->db);
 		$entries = array();
 		while ($row=mysql_fetch_assoc($result)){

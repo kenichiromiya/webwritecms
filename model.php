@@ -14,6 +14,9 @@ class Model
                 $this->post = $post;
                 $this->get = $get;
                 $this->request = $request;
+		$classname = get_class($this);
+		preg_match("/(.*?)Model/",$classname,$m);
+		$this->table = strtolower($m[1]);
 	}
 
 }

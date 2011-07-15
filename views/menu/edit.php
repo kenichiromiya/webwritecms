@@ -9,7 +9,7 @@
 <td><?=$_LANG['menu_path']?></td><td><input type="text" name="path" value="<?=$menu['path']?>"></td>
 </tr>
 <tr>
-<td></td><td><input type="submit" name="add" value="<?=$_LANG['menu_add']?>"></td>
+<td></td><td><input type="submit" name="add" value="<?=$_LANG['menu_submit']?>"></td>
 </tr>
 </table>
 </form>

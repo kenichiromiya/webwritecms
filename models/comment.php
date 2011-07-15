@@ -3,6 +3,8 @@ include_once("models/cms.php");
 
 class CommentModel extends CMSModel {
 
+	public $commentnums;
+
 	function __construct() {
 		parent::__construct();
 	}
@@ -23,8 +25,8 @@ class CommentModel extends CMSModel {
 		return $comments;
 	}
 
-	function getcommentnum() {
-		$sql = "SELECT FOUND_ROWS()";
+	function getcommentnum($id) {
+		$sql = sprintf("SELECT count(*) AS commentnum FROM %s WHERE entry_id = %s",TABLE_PREFIX."comment",m($id));
 		$result = mysql_query($sql,$this->db);
 		$commentnum = mysql_result($result,0);
 		return $commentnum;

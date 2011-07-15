@@ -7,7 +7,7 @@
 <?php }?>
 <?php if($prev){ ?>
 <span id="prev">
-<a href="entry/<?=$next['id']?>/"><?=$prev['title']?></a> &gt;
+<a href="entry/<?=$prev['id']?>/"><?=$prev['title']?></a> &gt;
 </span>
 <?php } else { ?>
 <span id ="prev"></span>

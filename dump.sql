@@ -19,6 +19,15 @@ CREATE TABLE `cmsdev_admin` (
 SET character_set_client = @saved_cs_client;
 SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
+CREATE TABLE `cmsdev_category` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `parent_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+SET character_set_client = @saved_cs_client;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
 CREATE TABLE `cmsdev_comment` (
   `id` int(11) NOT NULL,
   `entry_id` int(11) NOT NULL,
@@ -47,6 +56,7 @@ SET character_set_client = utf8;
 CREATE TABLE `cmsdev_entry` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
+  `category_id` int(11) NOT NULL,
   `body` text NOT NULL,
   `parent_id` int(11) NOT NULL,
   `status` varchar(255) NOT NULL,

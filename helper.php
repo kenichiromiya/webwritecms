@@ -201,5 +201,47 @@ function imageresize($newfilename,$filename,$max_width,$max_height) {
 
 
 //http://www.php-z.net/c10/n84.html
+function list_to_tree($category = array(),
+		$idField = 'id',$parentField='parent_id'){
+	if(!is_array($category)) exit("配列ではありません");
 
+	$index = array();
+	$tree = array();
+
+	foreach($category as $value){
+		$id     = $value[$idField];
+		$parent = $value[$parentField];
+
+		if(isset($index[$id])){
+			$value['child'] = $index[$id]['child'];
+			$index[$id] = $value;
+
+		} else {
+			$index[$id] = $value;
+		}
+
+		if($parent == 0){
+			$tree[] =& $index[$id];
+
+		} else {
+			$index[$parent]['child'][] =& $index[$id];
+		}
+
+
+	}
+	return $tree;
+}
+
+
+function tree_walk($data=array(),$callback){
+
+	if(is_array($data)){
+		foreach($data as $key => $value){
+			$callback($value);
+			if(is_array($value['child'])) {
+				tree_walk($value['child']);
+			}
+		}
+	}
+}
 ?>

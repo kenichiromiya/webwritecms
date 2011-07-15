@@ -22,6 +22,7 @@
 <li><a href="entry/edit/"><?=$_LANG['admin_add_entry']?></a></li>
 <li><a href="page/admin/"><?=$_LANG['admin_page']?></a></li>
 <li><a href="entry/admin/"><?=$_LANG['admin_entry']?></a></li>
+<li><a href="category/admin/"><?=$_LANG['admin_category']?></a></li>
 <li><a href="menu/admin/"><?=$_LANG['admin_menu']?></a></li>
 <li><a href="account/admin/"><?=$_LANG['admin_account']?></a></li>
 </ul>

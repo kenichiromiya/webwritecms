@@ -28,6 +28,34 @@
 <?php } ?>
 </ul>
 </div>
+<div class="box">
+<?php
+echo category_html_create($categorytree);
+
+function category_html_create($data=array(),$depth = 0){
+
+        $html .= "<ul>\n";
+        if(is_array($data)){
+                foreach($data as $key => $value){
+                        if (isset($data[$key+1]) or $depth == 0) {
+                                $html .= "<li>\n";
+                        } else {
+                                $html .= "<li class=\"lastitem\">\n";
+                        }
+                        $name = $value['name'];
+                        $id = $value['id'];
+                        $html .= "<a href=\"entry/?c=$id\">$name</a>";
+                        if(is_array($value['child'])) {
+                                $html .= category_html_create($value['child'],$depth+1);
+                        }
+                        $html .= "</li>\n";
+                }
+        }
+        $html .= "</ul>\n";
+        return $html;
+}
+?>
+</div>
 </div>
 
 </div>
@@ -36,3 +64,29 @@
 </div>
 </body>
 </html>
+<?php
+function treeview($data=array(),$depth = 0){
+
+        $html .= "<ul>\n";
+        if(is_array($data)){
+                foreach($data as $key => $value){
+                        if (isset($data[$key+1]) or $depth == 0) {
+                                $html .= "<li>\n";
+                        } else {
+                                $html .= "<li class=\"lastitem\">\n";
+                        }
+                        $name = $value['name'];
+                        $id = $value['id'];
+                        $html .= $name;
+                        //print_r($value);
+                        if(is_array($value['child'])) {
+                                $html .= treeview($value['child'],$depth+1);
+                                //$aaa[] = $value;
+                        }
+                        $html .= "</li>\n";
+                }
+        }
+        $html .= "</ul>\n";
+        return $html;
+}
+?>
