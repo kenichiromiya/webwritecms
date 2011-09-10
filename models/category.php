@@ -1,7 +1,6 @@
 <?php
-include_once("models/cms.php");
 
-class CategoryModel extends CMSModel
+class CategoryModel extends Model
 {
 
 	public $categories;

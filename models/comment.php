@@ -1,7 +1,6 @@
 <?php
-include_once("models/cms.php");
 
-class CommentModel extends CMSModel {
+class CommentModel extends Model {
 
 	public $commentnums;
 
@@ -10,26 +9,29 @@ class CommentModel extends CMSModel {
 	}
 
 	function addcomment($param) {
-		$query = sprintf("INSERT INTO %s (entry_id,name,url,title,body,adddate) VALUES('%s','%s','%s','%s','%s',now())",TABLE_PREFIX."comment",m($param['id']),m($param['name']),m($param['url']),m($param['title']),m($param['body']));
-		mysql_query($query,$this->db);
+		$sql = "INSERT INTO ".$this->table." (entry_id,name,url,title,body,adddate) VALUES(?,?,?,?,?,now())";
+                $sth = $this->dbh->prepare($sql);
+                //echo $param['id']."#".$param['name']."#".$param['url']."#".$param['title']."#".$param['body'];
+                $sth->execute(array($param['id'],$param['name'],$param['url'],$param['title'],$param['body']));
+                //$sth->execute(array("16","hage","",$param['title'],$param['body']));
+		//mysql_query($query,$this->db);
 
 	}
 
 	function getcomments($param) {
-		$sql = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s WHERE entry_id = '%s' ORDER BY adddate",TABLE_PREFIX."comment",m($param['id']));
-		$result = mysql_query($sql,$this->db);
-		$comments = array();
-		while ($row=mysql_fetch_assoc($result)){
-			array_push($comments,$row);
-		}
-		return $comments;
+		$sql = "SELECT SQL_CALC_FOUND_ROWS * FROM ".$this->table." WHERE entry_id = ? ORDER BY adddate";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array($param['id']));
+                return $sth->fetchAll();
 	}
 
 	function getcommentnum($id) {
-		$sql = sprintf("SELECT count(*) AS commentnum FROM %s WHERE entry_id = %s",TABLE_PREFIX."comment",m($id));
-		$result = mysql_query($sql,$this->db);
-		$commentnum = mysql_result($result,0);
-		return $commentnum;
+		$sql = "SELECT count(*) AS commentnum FROM ".$this->table." WHERE entry_id = ?";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array($id));
+                //return $sth->fetchAll();
+                $row = $sth->fetch();
+                return $row['commentnum'];
 	}
 }
 ?>

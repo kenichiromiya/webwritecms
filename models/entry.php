@@ -1,78 +1,113 @@
 <?php
-include_once("models/cms.php");
 
-class EntryModel extends CMSModel {
+class EntryModel extends Model {
 
 	public function __construct() {
 		parent::__construct();
 	}
 
 	public function getentryarchives() {
-		$sql = sprintf("SELECT count(*) AS count,DATE_FORMAT(adddate,'%%Y%%m') AS adddate FROM %s GROUP BY DATE_FORMAT(adddate, '%%Y%%m') ORDER BY adddate DESC",TABLE_PREFIX."entry");
+		$sql = "SELECT count(*) AS count,DATE_FORMAT(adddate,'%%Y%%m') AS adddate FROM ".$this->table." GROUP BY DATE_FORMAT(adddate, '%%Y%%m') ORDER BY adddate DESC";
+		$sth = $this->dbh->query($sql);
+		return $sth->fetchAll();
+/*
 		$result = mysql_query($sql,$this->db);
 		$archives = array();
 		while ($archive=mysql_fetch_assoc($result)){
 			array_push($archives,$archive);
 		}
 		return $archives;
+*/
 	}
 
+/*
 	public function addentry($param) {
-		$query = sprintf("INSERT INTO %s (title,category_id,body,adddate,moddate) VALUES('%s','%s','%s',now(),now())",TABLE_PREFIX."entry",m($param['title']),m($param['category_id']),m($param['body']));
-		mysql_query($query,$this->db);
+		$sql = "INSERT INTO ".TABLE_PREFIX."entry (title,category_id,body,adddate,moddate) VALUES(?,?,?,now(),now())";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array($param['title'],$param['category_id'],$param['body']));
+
+//		mysql_query($query,$this->db);
 	}
 
 	public function editentry($param){
-		$query = sprintf("UPDATE %s SET title = '%s',category_id = '%s',body = '%s',moddate = now() WHERE id = '%s'",TABLE_PREFIX."entry",m($param['title']),m($param['category_id']),m($param['body']),m($param['id']));
-		mysql_query($query,$this->db);
+		$sql = "UPDATE ".TABLE_PREFIX."entry SET title = ?,category_id = ?,body = ?,moddate = now() WHERE id = ?";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array($param['title'],$param['category_id'],$param['body'],$param['id']));
+		//mysql_query($query,$this->db);
 	}
 
 	public function deleteentry($param){
-		$query = sprintf("DELETE FROM %s WHERE id = '%s'",TABLE_PREFIX."entry",m($param['id']));
-		mysql_query($query,$this->db);
+		$sql = "DELETE FROM ".TABLE_PREFIX."entry WHERE id = ?";
+		$sth = $this->dbh->prepare($sql);
+		$sth->execute(array($param['id']));
+
+	//	mysql_query($query,$this->db);
 	}
 
 	public function getentry($param) {
-		$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s WHERE id = '%s'",TABLE_PREFIX."entry",m($param['id']));
-		$result = mysql_query($query,$this->db);
-		$entry=mysql_fetch_assoc($result);
-		return $entry;
+		$sql = "SELECT SQL_CALC_FOUND_ROWS * FROM ".TABLE_PREFIX."entry WHERE id = ?";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array($param['id']));
+                return $sth->fetch();
+
+		//$result = mysql_query($query,$this->db);
+		//$entry=mysql_fetch_assoc($result);
+		//return $entry;
 	}
+*/
 
 	public function getpreventry($param) {
-		$sql = sprintf("SELECT * FROM %s where id < '%s' ORDER BY id DESC limit 1",TABLE_PREFIX."entry",m($param['id']));
-		$result = mysql_query($sql,$this->db);
-		$entry=mysql_fetch_assoc($result);
-		return $entry;
+		$sql = "SELECT * FROM ".$this->table." where id < ? ORDER BY id DESC limit 1";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array($param['id']));
+                return $sth->fetch();
+		//$result = mysql_query($sql,$this->db);
+		//$entry=mysql_fetch_assoc($result);
+		//return $entry;
 	}
 	public function getnextentry($param) {
-		$sql = sprintf("SELECT * FROM %s where id > '%s' ORDER BY id limit 1",TABLE_PREFIX."entry",m($param['id']));
-		$result = mysql_query($sql,$this->db);
-		$entry=mysql_fetch_assoc($result);
-		return $entry;
+		$sql = "SELECT * FROM ".$this->table." where id > ? ORDER BY id limit 1";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array($param['id']));
+                return $sth->fetch();
+		//$result = mysql_query($sql,$this->db);
+		//$entry=mysql_fetch_assoc($result);
+		//return $entry;
 	}
 
 	public function getrecententries($param){
 		$category_id = $param['c'];
+		$bind_param = array();
+		$sql = "SELECT SQL_CALC_FOUND_ROWS * FROM ".$this->table." ";
 		if ($category_id) {
-			$wherequery = sprintf("WHERE category_id = '%s'",m($category_id));
+			$sql .= "WHERE category_id = ? ";
+			array_push($bind_param,$category_id);
 		}
-		$sql = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s $wherequery ORDER BY adddate DESC limit %s,%s",TABLE_PREFIX."entry",m("0"),m("10"));
+		$sql .= "ORDER BY adddate DESC limit 0,10";
+
+                $sth = $this->dbh->prepare($sql);
+		$sth->execute($bind_param);
+                return $sth->fetchAll();
+
+/*
 		$result = mysql_query($sql,$this->db);
 		$entries = array();
 		while ($row=mysql_fetch_assoc($result)){
 			array_push($entries,$row);
 		}
 		return $entries;
+*/
 	}
 
 	public function getentries($param) {
 		$date = $param['d'];
 		$category_id = $param['c'];
+		//$num_per_page = isset($param['n']) ? $param['n'] : '1';
 		$num_per_page = isset($param['n']) ? $param['n'] : '1';
 		$page = isset($param['p']) ? $param['p'] : '1';
 		$start = ($page-1)*$num_per_page;
-		$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s ",TABLE_PREFIX."entry");
+		$sql = "SELECT SQL_CALC_FOUND_ROWS * FROM ".$this->table." ";
+		$bind_param = array();
 		if ($date){
 			if (strlen($date) == 6){
 				list($year,$mon) = sscanf($date,"%04d%02d");
@@ -82,28 +117,36 @@ class EntryModel extends CMSModel {
 				list($year,$mon,$mday) = sscanf($date,"%04d%02d%02d");
 				$adddate = sprintf("%04d-%02d-%02d%%",$year,$mon,$mday);
 			}
-			//$query = sprintf("SELECT SQL_CALC_FOUND_ROWS * FROM %s AS E LEFT JOIN ($subquery) AS C ON E.id = C.entry_id WHERE adddate like '%s' ORDER BY adddate DESC limit %s,%s",TABLE_PREFIX."entry",m($adddate),m($start),m($num_per_page));
-			$query .= sprintf("WHERE adddate like '%s' ",m($adddate));
+			$sql .= "WHERE adddate like ? ";
+			array_push($bind_param,$adddate);
 		}
 		if ($category_id) {
-			$query .= sprintf("WHERE category_id = '%s' ",m($category_id));
+			$sql .= "WHERE category_id = ? ";
+			array_push($bind_param,$category_id);
 		}
-		$query .= sprintf("ORDER BY adddate DESC limit %s,%s ",m($start),m($num_per_page));
+		$sql .= "ORDER BY adddate DESC limit $start,$num_per_page ";
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute($bind_param);
+                return $sth->fetchAll();
+
+/*
 		$result = mysql_query($query,$this->db);
 		$entries = array();
 		while ($row=mysql_fetch_assoc($result)){
 			array_push($entries,$row);
 		}
 		return $entries;
+*/
 
 	}
 
 	
 	public function getcount() {
 		$sql = "SELECT FOUND_ROWS()";
-		$result = mysql_query($sql,$this->db);
-		$count = mysql_result($result,0);
-		return $count;
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute();
+                $row = $sth->fetch();
+		return $row[0];
 	}
 
 
@@ -124,12 +167,19 @@ class EntryModel extends CMSModel {
 	public function getdays($year,$mon){
 		$adddate = sprintf("%04d-%02d%%",$year,$mon);
 		// その月のデータを取得する
-		$sql = sprintf("SELECT * FROM %s WHERE adddate LIKE '%s'",TABLE_PREFIX."entry",m($adddate));
+		$sql = "SELECT * FROM ".$this->table." WHERE adddate LIKE ?";
+		//echo $sql;
+                $sth = $this->dbh->prepare($sql);
+                $sth->execute(array("$adddate"));
+                $adddates = $sth->fetchAll();
+
+		/*
 		$result = mysql_query($sql,$this->db);
 		$adddates = array();
 		while ($row=mysql_fetch_assoc($result)){
 			array_push($adddates,$row);
 		}
+		*/
 		$days = array();
 		foreach ($adddates as $adddate) {
 			// http://keithdevens.com/software/php_calendar#source

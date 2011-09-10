@@ -2,12 +2,7 @@
 
 class Dispatcher {
 	public function __construct() {
-		global $post;
-		global $get;
-		global $param;
-		$this->post = $post;
-		$this->get = $get;
-		$this->param = $param;
+		$this->param = Sanitizer::sanitize();
 	}
 
 	public function dispatch() {
@@ -21,21 +16,10 @@ class Dispatcher {
 		$classname = ucwords($this->param['controller'])."Controller";
 		if (class_exists($classname)) {
 			$controller =& new $classname();
+			//$controller->param = $this->param;
 		}
-		switch ($this->param['method']) {
-			case "POST":
-				$controller->post();
-				break;
-			case "PUT":
-				$controller->put();
-				break;
-			case "DELETE":
-				$controller->delete();
-				break;
-			case "GET";
-				$controller->get();
-				break;
-		}
+		$actionname = isset($this->param['action']) ? $this->param['action'] : "index";
+		$controller->$actionname();
 	}
 }
 ?>

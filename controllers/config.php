@@ -1,12 +1,12 @@
 <?php
-include_once("controllers/cms.php");
+include_once("controller.php");
 /*
 if(!$session['username']){
 	//header("Location:".BASE_URI."login.php?done=".$_VAR['done']);
 	header("Location:login.php?done=$done");
 }
 */
-class ConfigController extends CMSController
+class ConfigController extends Controller
 {
 	public $configmodel;
 

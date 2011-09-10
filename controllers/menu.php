@@ -1,8 +1,8 @@
 <?php
-include_once("controllers/cms.php");
+include_once("controller.php");
 include_once("models/menu.php");
 
-class MenuController extends CMSController
+class MenuController extends Controller
 {
 	public $menumodel = '';
 	public $var = '';
@@ -31,7 +31,6 @@ class MenuController extends CMSController
 	}
 
 	public function get() {
-		global $_LANG;
 
 		if ($this->param['action'] == "edit") {
 			if ($this->param['id']) {

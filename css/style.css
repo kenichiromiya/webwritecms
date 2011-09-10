@@ -17,7 +17,14 @@ border-style:none;
 margin:0;
 }
 
-form {
+
+#dialog {
+}
+#gallery {
+  width: 100%;
+}
+
+form.delete,input.use {
 display:inline;
 }
 
@@ -36,7 +43,7 @@ clear: left;
 
 #edit br,#comment br { clear: left; }
 
-#setup input,#login inpu {
+#setup input,#login input {
 display: block;
 float: left;
 }
@@ -60,10 +67,6 @@ padding-right: 15px;
         clear: both;
         width: 800px;
 }
-#title {
-    width:600;
-    float:left;
-}
 #setup {
         width: 400px;
 	text-align:left;
@@ -78,6 +81,18 @@ padding-right: 15px;
 	text-align:left;
 	margin-left:auto;
 	margin-right:auto;
+}
+#template {
+        width: 400px;
+	border-style:solid;
+	border-width:1px;
+	margin-bottom:10px;
+	text-align:left;
+	margin-left:auto;
+	margin-right:auto;
+}
+#template table {
+        width: 100%;
 }
 #page {
         width: 600px;
@@ -114,13 +129,14 @@ padding-right: 15px;
    margin-right:10px; /*右の間隔をあける*/
 }
 #main {
+
    float: left;
    width: 590px;
    text-align:left;
    margin-right:10px; /*右の間隔をあける*/
 }
 #sidebar {
-   float: left;
+   float: right;
    text-align:left;
    width: 190px;
 }
@@ -190,35 +206,13 @@ padding-right: 15px;
 #logo {
         float: left;
 }
-#gnavi {
+#session {
     float:right;
     text-align:right;
 }
 .commentlink {
     text-align:right;
 }
-
-#photolist{
-	width: 550px;
-	margin-top:20px;
-	margin-left:auto;
-	margin-right:auto;
-}
-
-#photo {
-	float:left;
-	list-style-type:none;
-	width: 110px;
-	height: 110px;
-}
-
-#photo img {
-	border-style:none;
-	display:block;
-	margin-left:auto;
-	margin-right:auto;
-}
-
 
 .tree ul
 	{
@@ -250,6 +244,10 @@ padding-right: 15px;
 	margin-bottom: 0.5em;
 	}
 
+
+#navigation {
+}
+
 #navigation ul{
         clear: both;
   list-style-type: none;
@@ -267,4 +265,21 @@ padding-right: 15px;
 .entryadddate {
 }
 .entrybody {
+}
+.edit {
+	text-align:right;
+}
+.resource {
+	width:110px;
+	height:110px;
+	border-style:solid;
+	border-width:1px;
+}
+#texteditor {
+	overflow:auto;
+	 word-wrap:break-word;
+	width:100%;
+	height:200px;
+       border-style:solid;
+       border-width:1px;
 }

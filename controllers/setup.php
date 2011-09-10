@@ -1,5 +1,6 @@
 <?php
-include_once("models/session.php");
+include_once("controller.php");
+include_once("models/setup.php");
 /*
 if(!$session['username']){
 	//header("Location:".BASE_URI."login.php?done=".$_VAR['done']);
@@ -9,39 +10,25 @@ if(!$session['username']){
 class SetupController extends Controller
 {
 	public function __construct() {
-		parent::__construct();
-		$base = "http://".$_SERVER["HTTP_HOST"].dirname($_SERVER["SCRIPT_NAME"])."/";
-		$this->var['base'] = $base;
+                $this->param = $GLOBALS['param'];
+                $this->validator = new Validator();
+                $this->template = new View();
+                $this->base = "http://".$_SERVER["HTTP_HOST"].dirname($_SERVER["SCRIPT_NAME"])."/";
+                $this->var['base'] = $this->base;
+
+		$this->setupmodel = new SetupModel();
         }
 
-	public function post() {
+	public function put() {
+		$this->setupmodel->create();
+	}
 
-		$define = '<?php'."\n";
-		$define .= 'define("MYSQL_CONNECT_HOST","'.$this->post['host'].'");'."\n";
-		$define .= 'define("MYSQL_CONNECT_USER","'.$this->post['user'].'");'."\n";
-		$define .= 'define("MYSQL_CONNECT_PASS","'.$this->post['pass'].'");'."\n";
-		$define .= 'define("MYSQL_DB_NAME","'.$this->post['db'].'");'."\n";
-		$define .= 'define("TABLE_PREFIX","'.$this->post['prefix'].'");'."\n";
-		$define .= '?>';
-
-		file_put_contents("define.php",$define);
-		$sql = file_get_contents("dump.sql");
-		$sql = preg_replace("/`cmsdev_(.+)`/","`".$this->post['prefix']."$1`",$sql);
-		$sqls = preg_split("/;/",$sql);
-		print_r($sqls);
-		$_DB = mysql_connect($this->post['host'],$this->post['user'],$this->post['pass']) or die("cannnot connect");
-		mysql_select_db($this->post['db'],$_DB);
-		$query = "SET NAMES utf8";
-		mysql_query($query,$_DB);
-		foreach ($sqls as $sql) {
-			mysql_query($sql,$_DB);
-		}
+	public function delete() {
+		$this->setupmodel->drop();
 	}
 
 	public function get() {
-		global $_LANG;
-
-		$this->template->display("setup/index.php",$this->var);
+		$this->template->display("setup.php",$this->var);
 	}
 }
 ?>

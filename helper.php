@@ -1,9 +1,21 @@
 <?php
 
+function getDirectoryTree( $outerDir ){ 
+    $dirs = array_diff( scandir( $outerDir ), Array( ".", ".." ) ); 
+    $dir_array = Array(); 
+    foreach( $dirs as $d ){ 
+        if( is_dir($outerDir."/".$d) ) $dir_array[ $d ] = getDirectoryTree( $outerDir."/".$d ); 
+        else $dir_array[ $d ] = $d; 
+    } 
+    return $dir_array; 
+} 
+
 function getpagenation($option) {
 	$cur_page = $option['cur_page'];
 	$per_page = $option['per_page'];
 	$total_rows = $option['total_rows'];
+	$cur_page = isset($cur_page) ? $cur_page : '1';
+
 	$min_page = 1;
 	$max_page = ceil($total_rows/$per_page);
 	$pagenation = array();
@@ -23,7 +35,8 @@ function getpagenation($option) {
 
 	$url = $_ENV["REQUEST_URI"];
 	$parsed_url =  parse_url($url);
-	parse_str($parsed_url['query'],$parsed_query);
+	$dirname = dirname($parsed_url['path']);
+	$path = preg_replace("/p\d+\/$/","",$parsed_url['path']);
 
 	//$start_page = array_shift($pages);
 	//$end_page = array_pop($pages);
@@ -33,8 +46,8 @@ function getpagenation($option) {
 	for ($i = $start_page;$i <= $end_page;$i++) {
 		$pagenation['pages'][$i]['num'] = $i;
 		if ($i != $cur_page) {
-			$parsed_query['p'] = $i;
-			$pagenation['pages'][$i]['query'] = http_build_query($parsed_query);
+			$pagenation['pages'][$i]['query'] = $parsed_url['query'];
+			$pagenation['pages'][$i]['url'] = "http://".$_SERVER['HTTP_HOST'].$path."p$i/?".$parsed_url['query'];
 		}
 	}
 
@@ -42,44 +55,25 @@ function getpagenation($option) {
 	$parsed_query['p'] = 1;
 	$pagenation['min_page'] = http_build_query($parsed_query);
 	if($cur_page > $min_page){
-		$parsed_query['p'] = $cur_page-1;
-		$pagenation['prev_page']['query'] = http_build_query($parsed_query);
+		$i = $cur_page-1;
+		$pagenation['prev_page']['query'] = $parsed_url['query'];
+		$pagenation['prev_page']['url'] = "http://".$_SERVER['HTTP_HOST'].$path."p$i/?".$parsed_url['query'];
 	}
 	if($cur_page < $max_page){
-		$parsed_query['p'] = $cur_page+1;
+		$i = $cur_page+1;
 		$pagenation['next_page']['query'] = http_build_query($parsed_query);
+		$pagenation['next_page']['url'] = "http://".$_SERVER['HTTP_HOST'].$path."p$i/?".$parsed_url['query'];
 	}
 	$pagenation['max_page']['num'] = $max_page;
-	$parsed_query['p'] = $max_page;
+	$i = $max_page;
 	$pagenation['max_page']['query'] = http_build_query($parsed_query);
+	$pagenation['max_page']['url'] = "http://".$_SERVER['HTTP_HOST'].$path."p$i/?".$parsed_url['query'];
 	return $pagenation;
-}
-	
-function http_add_query($url,$query) {
-	$parsed_url =  parse_url($url);
-	parse_str($parsed_url['query'],$parsed_query);
-	$parsed_query = array_merge($parsed_query,$query);
-	//unset($parsed_query['p']);
-	$parsed_url['query'] = http_build_query($parsed_query);
-	$url = $parsed_url['path']."?".$parsed_url['query'];
-
 }
 
 //WHERE photo.photo_id = tag.photo_id and tag.tagname = '$query'"
 
-function m($string) {
-	return mysql_real_escape_string($string);
-}
 
-/*
-function file_get_{
-	ob_start();
-	eval('?>' . file_get_contents('plugins/menu.php') . '<?');
-	$string = ob_get_contents();
-	ob_end_clean();
-	return $string;
-}
-*/
 function getpath() {
 	
 	$parseurl = parse_url("http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI']);
@@ -88,55 +82,9 @@ function getpath() {
 	return $path;
 }
 
-function gettag($photo_id) {
-//$query = sprintf("INSERT INTO tag (photo_id,tagname)
-	global $_DB;
-	$sql = sprintf("SELECT tagname FROM tag WHERE photo_id = '%s'",m($photo_id));
-	$result = mysql_query($sql,$_DB);
-	$tags = array();
-	while ($row=mysql_fetch_assoc($result)){
-		$row['query'] = urlencode($row['tagname']);
-		array_push($tags,$row);
-	}
-	return $tags;
-}
-
-function gettags() {
-	global $_DB;
-	$sql ="SELECT tagname,count(tagname) AS tagcount FROM tag GROUP BY tagname ORDER BY tagcount DESC";
-	$result = mysql_query($sql,$_DB);
-	$tags = array();
-	while ($row=mysql_fetch_assoc($result)){
-		$row['query'] = urlencode($row['tagname']);
-		array_push($tags,$row);
-	}
-	return $tags;
-}
-
 
 function getdone() {
 	return urlencode("http://".$_ENV["HTTP_HOST"].$_ENV["REQUEST_URI"]);
-}
-
-/*
-function getloginname() {
-	global $_DB;
-	$session_id = $_COOKIE['session_id'];
-	if ($session_id){
-		//$query = "SELECT username FROM session WHERE session_id = '$session_id'";
-		$query = sprintf("SELECT username FROM session WHERE session_id = '%s'",m($session_id));
-		$result = mysql_query($query,$_DB);
-		$row=mysql_fetch_assoc($result);
-		return $row['username'];
-	}
-}
-*/
-function getprofilebykey($username) {
-	global $_DB;
-	//$query = "SELECT * FROM profile WHERE username = '$username'";
-	$query = sprintf("SELECT * FROM profile WHERE username = '%s'",m($username));
-	$result = mysql_query($query,$_DB);
-	return mysql_fetch_assoc($result);
 }
 
 function getresampledimagesize($filename,$max_width,$max_height) {
@@ -162,9 +110,9 @@ function imageresize($newfilename,$filename,$max_width,$max_height) {
 
 	if ($ratio > 1) {
 		$new_width = $max_width;
-		$new_height = $max_height/$ratio;
+		$new_height = $max_width/$ratio;
 	} else {
-		$new_width = $max_width*$ratio;
+		$new_width = $max_height*$ratio;
 		$new_height = $max_height;
 	}
 
@@ -190,8 +138,16 @@ function imageresize($newfilename,$filename,$max_width,$max_height) {
 //imageconvolution($image_p, $matrix, 8, 0);   
   
 
-	// 出力
-	imagejpeg($image_p, $newfilename, 95);
+// 出力
+	if (preg_match("/jpg/",$newfilename,$m)) {
+		imagejpeg($image_p, $newfilename, 95);
+	}
+	if (preg_match("/gif/",$newfilename,$m)) {
+		imagegif($image_p, $newfilename);
+	}
+	if (preg_match("/png/",$newfilename,$m)) {
+		imagepng($image_p, $newfilename);
+	}
 }
 
 # PHP Calendar (version 2.3), written by Keith Devens

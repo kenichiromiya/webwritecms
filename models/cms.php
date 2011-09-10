@@ -8,11 +8,8 @@ if(!$session['username']){
 */
 class CMSModel extends Model
 {
-	public $db;
 	public function __construct() {
 		parent::__construct();
-		global $_DB;
-		$this->db = $_DB;
 	}
 
 }

@@ -1,12 +1,9 @@
 <?php
-include_once("controllers/cms.php");
-include_once("models/account.php");
 
-class AccountController extends CMSController
+class AccountController extends Controller
 {
 
         public $accountmodel = '';
-	public $template = '';
         public $var = '';
 
         public function __construct() {
@@ -18,38 +15,34 @@ class AccountController extends CMSController
 		$this->auth();
         }
 
-
-        public function put() {
-                $this->accountmodel->addaccount($this->param);
-                header("Location:".$this->var['base']."account/admin/");
-        }
-
-        public function post() {
-                $this->accountmodel->editaccount($this->param);
-                header("Location:".$this->var['base']."account/admin/");
-        }
-
-        public function delete() {
-                $this->accountmodel->deleteaccount($this->param);
-                header("Location:".$this->var['base']."account/admin/");
-        }
-
-	public function get(){
-		if ($this->param['action'] == "edit") {
-                        if ($this->param['id']) {
-				$account = $this->accountmodel->getaccount($this->param);
-                                $this->var['_method'] = "post";
-                        } elseif($this->param['action'] == "edit") {
-                                $account = array('username'=>'','role'=>'');
-                                $this->var['_method'] = "put";
-                        }
-			$this->var['account'] = $account;
-			$this->var['main'] = $this->template->getcontents("account/edit.php",$this->var);
-		} elseif ($this->param['action'] == "admin") {
+	public function index() {
+		if ($this->param['method'] == "GET") {
 			$this->var['accounts'] = $this->accountmodel->getaccounts();
-			$this->var['main'] = $this->template->getcontents("account/account.php",$this->var);
+			$this->var['main'] = $this->view->getcontents("account_admin.php",$this->var);
+			$this->view->display("account.php",$this->var);
+		} elseif ($this->param['method'] == "POST") {
+			$this->accountmodel->editaccount($this->param);
+			header("Location:".$this->var['base']."account/");
+		} elseif ($this->param['method'] == "PUT") {
+			$this->accountmodel->addaccount($this->param);
+			header("Location:".$this->var['base']."account/");
+		} elseif ($this->param['method'] == "DELETE") {
+			$this->accountmodel->deleteaccount($this->param);
+			header("Location:".$this->var['base']."account/");
 		}
-		$this->template->display("admin/index.php",$this->var);
+	}
+
+	public function edit() {
+		if ($this->param['id']) {
+			$account = $this->accountmodel->getaccount($this->param);
+			$this->var['_method'] = "post";
+		} elseif($this->param['action'] == "edit") {
+			$account = array('username'=>'','role'=>'');
+			$this->var['_method'] = "put";
+		}
+		$this->var['account'] = $account;
+		$this->var['main'] = $this->view->getcontents("account_edit.php",$this->var);
+		$this->view->display("account.php",$this->var);
 	}
 }
 ?>

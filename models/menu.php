@@ -1,7 +1,7 @@
 <?php
-include_once("models/cms.php");
+include_once("model.php");
 
-class MenuModel extends CMSModel
+class MenuModel extends Model
 {
 
         public function __construct() {

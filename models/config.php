@@ -1,7 +1,7 @@
 <?php
-include_once("models/cms.php");
+include_once("model.php");
 
-class ConfigModel extends CMSModel {
+class ConfigModel extends Model {
 
         public function __construct() {
                 parent::__construct();
